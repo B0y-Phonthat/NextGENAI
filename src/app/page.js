@@ -10,10 +10,17 @@ export default function Home() {
   const onOptionBtn = <PiOption />;
 
   const [inputValue, setInputValue] = useState("");
+  const [lst_Message, setLst_Message] = useState([]);
+
   const handleSubmit = (e) => {
     if(inputValue === "") return alert("Please enter a value");
+    else if (inputValue.trim()) {
+      setLst_Message([...lst_Message, {role: "user", content: inputValue}]);
+    }
     e.preventDefault();
-    console.log(inputValue);
+    // console.log(inputValue);
+    // console.log(lst_Message)
+    setInputValue("");
   }
   return (
     <main className="min-h-screen bg-gray-50 flex flex-col">
@@ -35,75 +42,19 @@ export default function Home() {
   
         {/* Messages Container */}
         <div className="flex-1 space-y-4 mb-6 overflow-y-auto">
-          {/* Message 1 */}
-          <div className="w-full rounded-md border border-blue-300 p-4 bg-white shadow-sm">
-            <div className="flex animate-pulse space-x-4">
-              <div className="size-10 rounded-full bg-gray-200 shrink-0"></div>
-              <div className="flex-1 space-y-6 py-1">
-                <div className="h-2 rounded bg-gray-200"></div>
-                <div className="space-y-3">
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="col-span-2 h-2 rounded bg-gray-200"></div>
-                    <div className="col-span-1 h-2 rounded bg-gray-200"></div>
-                  </div>
-                  <div className="h-2 rounded bg-gray-200"></div>
+          {/* User Message */}
+          {lst_Message.map((message, index) => {
+            const isUser = message.role === 'user';
+            return (
+              <div key={index} className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-xs rounded-lg p-3 ${isUser ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}>
+                  <p>{message.content}</p>
                 </div>
               </div>
-            </div>
-          </div>
-  
-          {/* Message 2 */}
-          <div className="w-full rounded-md border border-blue-300 p-4 bg-white shadow-sm">
-            <div className="flex animate-pulse space-x-4">
-              <div className="size-10 rounded-full bg-gray-200 shrink-0"></div>
-              <div className="flex-1 space-y-6 py-1">
-                <div className="h-2 rounded bg-gray-200"></div>
-                <div className="space-y-3">
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="col-span-2 h-2 rounded bg-gray-200"></div>
-                    <div className="col-span-1 h-2 rounded bg-gray-200"></div>
-                  </div>
-                  <div className="h-2 rounded bg-gray-200"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-  
-          {/* Message 3 */}
-          <div className="w-full rounded-md border border-blue-300 p-4 bg-white shadow-sm">
-            <div className="flex animate-pulse space-x-4">
-              <div className="size-10 rounded-full bg-gray-200 shrink-0"></div>
-              <div className="flex-1 space-y-6 py-1">
-                <div className="h-2 rounded bg-gray-200"></div>
-                <div className="space-y-3">
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="col-span-2 h-2 rounded bg-gray-200"></div>
-                    <div className="col-span-1 h-2 rounded bg-gray-200"></div>
-                  </div>
-                  <div className="h-2 rounded bg-gray-200"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-  
-          {/* Message 4 */}
-          <div className="w-full rounded-md border border-blue-300 p-4 bg-white shadow-sm">
-            <div className="flex animate-pulse space-x-4">
-              <div className="size-10 rounded-full bg-gray-200 shrink-0"></div>
-              <div className="flex-1 space-y-6 py-1">
-                <div className="h-2 rounded bg-gray-200"></div>
-                <div className="space-y-3">
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="col-span-2 h-2 rounded bg-gray-200"></div>
-                    <div className="col-span-1 h-2 rounded bg-gray-200"></div>
-                  </div>
-                  <div className="h-2 rounded bg-gray-200"></div>
-                </div>
-              </div>
-            </div>
-          </div>
+            );
+          })}
         </div>
-  
+        
         {/* Input Container with integrated send button */}
         <div className="relative">
           <input 
@@ -111,7 +62,7 @@ export default function Home() {
             placeholder="Ask me here" 
             value={inputValue} 
             onChange={(e) => setInputValue(e.target.value)}
-            className="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-lg focus:border-rose-600 focus:outline-none focus:ring-2 focus:ring-rose-200 transition-all"
+            className="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-lg focus:border-rose-600 focus:outline-none focus:ring-2 focus:ring-rose-200 transition-all text-black"
           />
           <button 
             type="button" 
