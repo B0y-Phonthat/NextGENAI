@@ -12,15 +12,35 @@ export default function Home() {
   const [inputValue, setInputValue] = useState("");
   const [lst_Message, setLst_Message] = useState([]);
 
-  const handleSubmit = (e) => {
-    if(inputValue === "") return alert("Please enter a value");
-    else if (inputValue.trim()) {
-      setLst_Message([...lst_Message, {role: "user", content: inputValue}]);
-    }
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if(inputValue === "") return alert("Please enter a value");
+    const userMessage = {role: "user", content: inputValue};
+    setLst_Message((currentMessage) => [...currentMessage, userMessage]);
+
+    const currentInput = inputValue;
+    
+    setInputValue("");
+    try {
+      const response = await fetch("http://localhost:3000/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message: currentInput }),
+    });
+    
+    const data = await response.json();
+
+    const assistantMessage = {role: "assistant", content: data.message};
+    setLst_Message((currentMessage) => [...currentMessage, assistantMessage]);
+
+    } catch (error) {
+      console.error("Error:", error);
+    }
     // console.log(inputValue);
     // console.log(lst_Message)
-    setInputValue("");
   }
   return (
     <main className="min-h-screen bg-gray-50 flex flex-col">
