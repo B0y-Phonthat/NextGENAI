@@ -1,98 +1,159 @@
-"use client";
-import { useState } from "react";
-import { FaFeatherAlt } from 'react-icons/fa';
-import { MdAdjust } from 'react-icons/md';
-import { PiOption } from 'react-icons/pi';
+'use client'
+
+import { useState } from 'react'
+import {
+  Dialog,
+  DialogPanel,
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Popover,
+  PopoverButton,
+  PopoverGroup,
+  PopoverPanel,
+} from '@headlessui/react'
+import {
+  Bars3Icon,
+  ChartPieIcon,
+  CursorArrowRaysIcon,
+  FingerPrintIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline'
+import { ChevronDownIcon} from '@heroicons/react/20/solid'
+
+const Playgrounds = [
+  { name: 'Object Detection', description: 'Paragraph', href: '#', icon: ChartPieIcon },
+  { name: 'Auto Predictive', description: 'Paragraph', href: '#', icon: CursorArrowRaysIcon },
+  { name: 'RAG', description: 'Paragraph', href: '#', icon: FingerPrintIcon },
+]
 
 export default function Home() {
-  const sendButton = <FaFeatherAlt />;
-  const onProcessBtn = <MdAdjust />;
-  const onOptionBtn = <PiOption />;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  const [inputValue, setInputValue] = useState("");
-  const [lst_Message, setLst_Message] = useState([]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if(inputValue === "") return alert("Please enter a value");
-    const userMessage = {role: "user", content: inputValue};
-    setLst_Message((currentMessage) => [...currentMessage, userMessage]);
-
-    const currentInput = inputValue;
-    
-    setInputValue("");
-    try {
-      const response = await fetch("http://localhost:3000/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ message: currentInput }),
-    });
-    
-    const data = await response.json();
-
-    const assistantMessage = {role: "assistant", content: data.message};
-    setLst_Message((currentMessage) => [...currentMessage, assistantMessage]);
-
-    } catch (error) {
-      console.error("Error:", error);
-    }
-    // console.log(inputValue);
-    // console.log(lst_Message)
-  }
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Outer Container */}
-      <div className="flex-1 flex flex-col max-w-md mx-auto w-full p-4">
-        
-        {/* Top Navigation */}
-        <div className="flex justify-center gap-2 mb-6">
-          <button type="button" className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
-            QR scanner
-          </button>
-          <button type="button" className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-            Chat
-          </button>
-          <button type="button" className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
-            NFC reader
-          </button>
+    <header className="bg-gray-900">
+      <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
+        <div className="flex lg:flex-1">
+          <a href="#" className="-m-1.5 p-1.5">
+            <span className="sr-only">NextWinds</span>
+            <img
+              alt=""
+              src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
+              className="h-8 w-auto"
+            />
+          </a>
         </div>
-  
-        {/* Messages Container */}
-        <div className="flex-1 space-y-4 mb-6 overflow-y-auto">
-          {/* User Message */}
-          {lst_Message.map((message, index) => {
-            const isUser = message.role === 'user';
-            return (
-              <div key={index} className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-xs rounded-lg p-3 ${isUser ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}>
-                  <p>{message.content}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        
-        {/* Input Container with integrated send button */}
-        <div className="relative">
-          <input 
-            type="text" 
-            placeholder="Ask me here" 
-            value={inputValue} 
-            onChange={(e) => setInputValue(e.target.value)}
-            className="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-lg focus:border-rose-600 focus:outline-none focus:ring-2 focus:ring-rose-200 transition-all text-black"
-          />
-          <button 
-            type="button" 
-            onClick={handleSubmit}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 text-gray-500 hover:text-rose-600 transition-colors"
+        <div className="flex lg:hidden">
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(true)}
+            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-400"
           >
-            {sendButton}
+            <span className="sr-only">Open main menu</span>
+            <Bars3Icon aria-hidden="true" className="size-6" />
           </button>
         </div>
-      </div>
-    </main>
+        <PopoverGroup className="hidden lg:flex lg:gap-x-12">
+          <Popover className="relative">
+            <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-white">
+              Playground
+              <ChevronDownIcon aria-hidden="true" className="size-5 flex-none text-gray-500" />
+            </PopoverButton>
+
+            <PopoverPanel
+              transition
+              className="absolute left-1/2 z-10 mt-3 w-screen max-w-md -translate-x-1/2 overflow-hidden rounded-3xl bg-gray-800 outline-1 -outline-offset-1 outline-white/10 transition data-closed:translate-y-1 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in"
+            >
+              <div className="p-4">
+                {Playgrounds.map((item) => (
+                  <div
+                    key={item.name}
+                    className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm/6 hover:bg-white/5"
+                  >
+                    <div className="flex size-11 flex-none items-center justify-center rounded-lg bg-gray-700/50 group-hover:bg-gray-700">
+                      <item.icon aria-hidden="true" className="size-6 text-gray-400 group-hover:text-white" />
+                    </div>
+                    <div className="flex-auto">
+                      <a href={item.href} className="block font-semibold text-white">
+                        {item.name}
+                        <span className="absolute inset-0" />
+                      </a>
+                      <p className="mt-1 text-gray-400">{item.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </PopoverPanel>
+          </Popover>
+
+        </PopoverGroup>
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+          <a href="#" className="text-sm/6 font-semibold text-white">
+            Log in <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+      </nav>
+      <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
+        <div className="fixed inset-0 z-50" />
+        <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-gray-900 p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-100/10">
+          <div className="flex items-center justify-between">
+            <a href="#" className="-m-1.5 p-1.5">
+              <span className="sr-only">Your Company</span>
+              <img
+                alt=""
+                src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
+                className="h-8 w-auto"
+              />
+            </a>
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(false)}
+              className="-m-2.5 rounded-md p-2.5 text-gray-400"
+            >
+              <span className="sr-only">Close menu</span>
+              <XMarkIcon aria-hidden="true" className="size-6" />
+            </button>
+          </div>
+          <div className="mt-6 flow-root">
+            <div className="-my-6 divide-y divide-white/10">
+              <div className="space-y-2 py-6">
+                <Disclosure as="div" className="-mx-3">
+                  <DisclosureButton className="group flex w-full items-center justify-between rounded-lg py-2 pr-3.5 pl-3 text-base/7 font-semibold text-white hover:bg-white/5">
+                    Playground
+                    <ChevronDownIcon aria-hidden="true" className="size-5 flex-none group-data-open:rotate-180" />
+                  </DisclosureButton>
+                </Disclosure>
+                <a
+                  href="#"
+                  className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5"
+                >
+                  Features
+                </a>
+                <a
+                  href="#"
+                  className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5"
+                >
+                  Marketplace
+                </a>
+                <a
+                  href="#"
+                  className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5"
+                >
+                  Company
+                </a>
+              </div>
+              <div className="py-6">
+                <a
+                  href="#"
+                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-white hover:bg-white/5"
+                >
+                  Log in
+                </a>
+              </div>
+            </div>
+          </div>
+        </DialogPanel>
+      </Dialog>
+    </header>
   )
 }
